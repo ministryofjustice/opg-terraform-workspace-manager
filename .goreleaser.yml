@@ -1,0 +1,26 @@
+project-name: terraform-workspace-manager
+
+env_files:
+  github_token: ${{ secrets.access_token }}
+
+release:
+  github:
+    owner: tomtucka
+    name: terraform-workspace-manager
+
+builds:
+  - binary: terraform-workspace-manager
+    id: terraform-workspace-manager
+    main: ./main.go
+    goos:
+      - linux
+      - darwin
+
+archives:
+  name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
+    - replacements:
+        darwin: Darwin
+        linux: Linux
+        amd64: x86_64
+
+

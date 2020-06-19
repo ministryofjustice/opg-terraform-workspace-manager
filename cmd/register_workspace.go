@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
+	_ "github.com/aws/aws-sdk-go/aws/credentials/stscreds"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -12,6 +13,10 @@ import (
 	"strconv"
 	"time"
 )
+
+type Session struct {
+	AwsSession *session.Session
+}
 
 func RegisterWorkspace(workspace *string, accountId *string, iamRoleName *string) {
 
