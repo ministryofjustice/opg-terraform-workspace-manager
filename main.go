@@ -42,15 +42,15 @@ func main()  {
 		flag.Usage()
 	}
 
-	if workspaceName == "" {
-		fmt.Println("Error: Workspace not passed")
-		flag.Usage()
-	} else {
-		PutWorkspace(&workspaceName, &awsAccountId, &awsIAMRoleName)
+	if expiredWorkspaces {
+		GetExpiredWorkspaces(&awsAccountId, &awsIAMRoleName)
 	}
 
-	if expiredWorkspaces {
-		GetExpiredWorkspaces()
+	if workspaceName != "" && expiredWorkspaces == true{
+		PutWorkspace(&workspaceName, &awsAccountId, &awsIAMRoleName)
+	} else {
+		fmt.Println("Error: Workspace not passed")
+		flag.Usage()
 	}
 }
 
@@ -100,6 +100,46 @@ func PutWorkspace(workspace *string, accountId *string, iamRoleName *string) {
 	fmt.Println("Successfully added '" + item.WorkspaceName + "' with TTL " + strconv.FormatInt(item.ExpiresTTL, 10) + " for workspace cleanup")
 }
 
-func GetExpiredWorkspaces() {
-	fmt.Println("Not yet implemented")
+func GetExpiredWorkspaces(accountId *string, iamRoleName *string) {
+	type Item struct {
+		WorkspaceName string
+	}
+
+	sess, err := session.NewSession()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	RoleArn := "arn:aws:iam::" + *accountId + ":role/" + *iamRoleName
+
+	creds := stscreds.NewCredentials(sess, RoleArn)
+	awsConfig := aws.Config{Credentials: creds, Region: aws.String("eu-west-1")}
+
+	svc := dynamodb.New(sess, &awsConfig)
+
+	params := &dynamodb.ScanInput{
+		TableName: aws.String("WorkspaceCleanup"),
+	}
+
+	result, err := svc.Scan(params)
+	if err != nil {
+		exitWithError(fmt.Errorf("failed to make Query API call, %v", err))
+	}
+
+	items := []Item{}
+
+	err = dynamodbattribute.UnmarshalListOfMaps(result.Items, &items)
+	if err != nil {
+		exitWithError(fmt.Errorf("failed to unmarshal Query result items, %v", err))
+	}
+
+	for i, item := range items {
+		fmt.Print(item.WorkspaceName, " ")
+		i++
+	}
+}
+
+func exitWithError(err error) {
+	fmt.Fprintln(os.Stderr, err)
+	os.Exit(1)
 }
