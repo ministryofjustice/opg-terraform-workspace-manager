@@ -25,7 +25,7 @@ module "workspace-cleanup" {
 ## Using this tool
 
 ```
-Usage: tf-workspace-cleanup -put=<workspace> -aws-account-id=12345678 -aws-iam-role=operator
+Usage: tf-workspace-cleanup -register-workspace=<workspace> -aws-account-id=12345678 -aws-iam-role=operator
 Usage: tf-workspace-cleanup -expired-workspaces=true -aws-account-id=12345678 -aws-iam-role=operator
   -aws-account-id string
     	Account ID for IAM Role
@@ -33,8 +33,8 @@ Usage: tf-workspace-cleanup -expired-workspaces=true -aws-account-id=12345678 -a
     	AWS IAM Role Name
   -expired-workspaces
     	get list of expired workspaces for deletion
-  -put string
-    	workspace to register for deletion at later time
+  -register-workspace string
+    	Register a workspace to be deleted at a later point
 ```
 
 ### Puting a workspace into DynamoDB
