@@ -16,22 +16,37 @@ import (
 
 func main()  {
 	flag.Usage = func() {
-		fmt.Println("Usage: tf-workspace-cleanup -put <workspace>")
-		fmt.Println("Usage: tf-workspace-cleanup -expired-workspaces true")
+		fmt.Println("Usage: tf-workspace-cleanup -put=<workspace>")
+		fmt.Println("Usage: tf-workspace-cleanup -expired-workspaces=true")
+		fmt.Println("Usage: tf-workspace-cleanup -put=<workspace> -aws-account-id=12345678 -aws-iam-role=sirius-ci")
 		flag.PrintDefaults()
 	}
 	var workspaceName string
 	var expiredWorkspaces bool
+	var awsAccountId string
+	var awsIAMRoleName string
 
 	flag.StringVar(&workspaceName, "put", "", "workspace to register for deletion at later time")
+	flag.StringVar(&awsAccountId, "aws-account-id", "", "Account ID for IAM Role")
+	flag.StringVar(&awsIAMRoleName, "aws-iam-role", "", "AWS IAM Role Name ")
 	flag.BoolVar(&expiredWorkspaces, "expired-workspaces", false, "get list of expired workspaces for deletion")
 	flag.Parse()
+
+	if awsAccountId == "" {
+		fmt.Println("Error: You have not provided an AWS Account ID")
+		flag.Usage()
+	}
+
+	if awsIAMRoleName == "" {
+		fmt.Println("Error: You have not provided an AWS IAM Role Name")
+		flag.Usage()
+	}
 
 	if workspaceName == "" {
 		fmt.Println("Error: Workspace not passed")
 		flag.Usage()
 	} else {
-		PutWorkspace(&workspaceName)
+		PutWorkspace(&workspaceName, &awsAccountId, &awsIAMRoleName)
 	}
 
 	if expiredWorkspaces {
@@ -39,19 +54,14 @@ func main()  {
 	}
 }
 
-func PutWorkspace(w *string) {
+func PutWorkspace(workspace *string, accountId *string, iamRoleName *string) {
 
 	sess, err := session.NewSession()
 	if err != nil {
 		log.Fatalln(err)
 	}
-	RoleArn := ""
-	// TODO - Allow AWS Account ID and Role name to be passed in via cli flag
-	if len(os.Getenv("CI")) > 0 {
-		RoleArn = "arn:aws:iam::288342028542:role/sirius-ci"
-	} else {
-		RoleArn = "arn:aws:iam::288342028542:role/operator"
-	}
+
+	RoleArn := "arn:aws:iam::" + *accountId + ":role/" + *iamRoleName
 
 	creds := stscreds.NewCredentials(sess, RoleArn)
 	awsConfig := aws.Config{Credentials: creds, Region: aws.String("eu-west-1")}
@@ -64,7 +74,7 @@ func PutWorkspace(w *string) {
 	}
 
 	item := Workspace{
-		WorkspaceName: *w,
+		WorkspaceName: *workspace,
 		ExpiresTTL:    time.Now().AddDate(0, 0, 1).Unix(),
 	}
 
