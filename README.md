@@ -36,10 +36,3 @@ Usage: tf-workspace-cleanup -expired-workspaces=true -aws-account-id=12345678 -a
   -register-workspace string
     	Register a workspace to be deleted at a later point
 ```
-
-### Puting a workspace into DynamoDB
-
-Putting something into DynamoDB is really simple
-
-`tf-workspace-cleanup -put=<workspace> -aws-account-id=<account_id> -aws-iam-role=<iam_role_name>`
-
