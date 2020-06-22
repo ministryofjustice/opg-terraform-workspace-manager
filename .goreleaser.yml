@@ -1,11 +1,11 @@
-project-name: terraform-workspace-manager
+project_name: terraform-workspace-manager
 
 env_files:
   github_token: ${{ secrets.access_token }}
 
 release:
   github:
-    owner: tomtucka
+    owner: TomTucka
     name: terraform-workspace-manager
 
 builds:
@@ -17,10 +17,9 @@ builds:
       - darwin
 
 archives:
-  name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
-    - replacements:
-        darwin: Darwin
-        linux: Linux
-        amd64: x86_64
-
-
+  -
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      amd64: x86_64
