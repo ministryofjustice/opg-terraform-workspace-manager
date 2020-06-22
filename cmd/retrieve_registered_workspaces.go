@@ -15,7 +15,7 @@ type Item struct {
 	WorkspaceName string
 }
 
-func RetrieveExpiredWorkspaces(accountId *string, iamRoleName *string) {
+func RetrieveProtectedWorkspaces(accountId *string, iamRoleName *string) {
 
 	sess, err := session.NewSession()
 	if err != nil {
