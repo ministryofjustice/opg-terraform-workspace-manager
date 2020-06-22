@@ -8,7 +8,7 @@ release:
     owner: tomtucka
     name: terraform-workspace-manager
 
-builds:
+build:
   - binary: terraform-workspace-manager
     id: terraform-workspace-manager
     main: ./main.go
@@ -22,5 +22,3 @@ archives:
         darwin: Darwin
         linux: Linux
         amd64: x86_64
-
-
