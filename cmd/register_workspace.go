@@ -18,7 +18,7 @@ type Session struct {
 	AwsSession *session.Session
 }
 
-func RegisterWorkspace(workspace *string, accountId *string, iamRoleName *string) {
+func RegisterWorkspace(workspace *string, accountId *string, iamRoleName *string, timeToProtect *int64) {
 
 	sess, err := session.NewSession()
 	if err != nil {
@@ -37,9 +37,11 @@ func RegisterWorkspace(workspace *string, accountId *string, iamRoleName *string
 		ExpiresTTL    int64
 	}
 
+
 	item := Workspace{
 		WorkspaceName: *workspace,
-		ExpiresTTL:    time.Now().AddDate(0, 0, 1).Unix(),
+		ExpiresTTL:    time.Now().Add(time.Hour * time.Duration(*timeToProtect)).Unix(),
+
 	}
 
 	WorkspaceToPut, err := dynamodbattribute.MarshalMap(item)

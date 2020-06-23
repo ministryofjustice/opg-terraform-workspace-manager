@@ -8,7 +8,7 @@ import (
 
 func main()  {
 	flag.Usage = func() {
-		fmt.Println("Usage: tf-workspace-cleanup -register-workspace=<workspace> -aws-account-id=12345678 -aws-iam-role=sirius-ci")
+		fmt.Println("Usage: tf-workspace-cleanup -register-workspace=<workspace> -time-to-protect=2 -aws-account-id=12345678 -aws-iam-role=sirius-ci")
 		fmt.Println("Usage: tf-workspace-cleanup -protected-workspaces=true -aws-account-id=12345678 -aws-iam-role=sirius-ci")
 		flag.PrintDefaults()
 	}
@@ -16,10 +16,12 @@ func main()  {
 	var protectedWorkspaces bool
 	var awsAccountId string
 	var awsIAMRoleName string
+	var timeToProtect int64
 
 	flag.StringVar(&workspaceName, "register-workspace", "", "Register a workspace to be deleted at a later point")
 	flag.StringVar(&awsAccountId, "aws-account-id", "", "Account ID for IAM Role")
-	flag.StringVar(&awsIAMRoleName, "aws-iam-role", "", "AWS IAM Role Name ")
+	flag.StringVar(&awsIAMRoleName, "aws-iam-role", "", "AWS IAM Role Name")
+	flag.Int64Var(&timeToProtect, "time-to-protect", 1 , "Time in hours to protect workspace for")
 	flag.BoolVar(&protectedWorkspaces, "protected-workspaces", false, "get list of protected workspaces for deletion")
 	flag.Parse()
 
@@ -38,7 +40,7 @@ func main()  {
 	}
 
 	if workspaceName != "" {
-		cmd.RegisterWorkspace(&workspaceName, &awsAccountId, &awsIAMRoleName)
+		cmd.RegisterWorkspace(&workspaceName, &awsAccountId, &awsIAMRoleName, &timeToProtect)
 	} else if protectedWorkspaces != true {
 		fmt.Println("Error: Workspace not passed")
 		flag.Usage()

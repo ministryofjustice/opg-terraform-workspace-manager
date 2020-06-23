@@ -25,7 +25,7 @@ module "workspace-cleanup" {
 ## Using this tool
 
 ```
-Usage: tf-workspace-cleanup -register-workspace=<workspace> -aws-account-id=12345678 -aws-iam-role=operator
+Usage: tf-workspace-cleanup -register-workspace=<workspace> -time-to-protect=2 -aws-account-id=12345678 -aws-iam-role=operator
 Usage: tf-workspace-cleanup -protected-workspaces=true -aws-account-id=12345678 -aws-iam-role=operator
   -aws-account-id string
     	Account ID for IAM Role
@@ -35,4 +35,6 @@ Usage: tf-workspace-cleanup -protected-workspaces=true -aws-account-id=12345678 
     	get list of protected workspaces for deletion
   -register-workspace string
     	Register a workspace to be deleted at a later point
+  -time-to-protect=2
+        Time in hours to protect workspace for
 ```
