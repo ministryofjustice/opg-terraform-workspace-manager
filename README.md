@@ -35,6 +35,6 @@ Usage: tf-workspace-cleanup -protected-workspaces=true -aws-account-id=12345678 
     	get list of protected workspaces for deletion
   -register-workspace string
     	Register a workspace to be deleted at a later point
-  -time-to-protect=2
+  -time-to-protect
         Time in hours to protect workspace for
 ```
