@@ -25,6 +25,8 @@ jobs:
           prerelease: ${{ env.prerelease }}
           releases_enabled: false
           with_v: true
+      - run: |
+          git status
       - name: test release
         id: rel
         uses: goreleaser/goreleaser-action@v5
