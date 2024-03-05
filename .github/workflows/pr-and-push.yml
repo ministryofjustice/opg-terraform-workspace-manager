@@ -1,0 +1,52 @@
+name: "[PR & PUSH] Tag & Release"
+
+on:
+  pull_request:
+    branches: ['main']
+    paths: ['go.mod', 'go.sum', 'main.go', 'cmd/**', 'terraform/workspace_cleanup/**']
+  push:
+    branches: ['main']
+    paths: ['go.mod', 'go.sum', 'main.go', 'cmd/**', 'terraform/workspace_cleanup/**']
+
+jobs:
+  tag_and_release:
+    name: "Tag and release"
+    runs-on: ubuntu-latest
+    env:
+      prerelease: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Generate semver tag"
+        id: semver
+        uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@v3.0.2
+        with:
+          prerelease: ${{ env.prerelease }}
+          releases_enabled: false
+          with_v: true
+      - name: "Checkout to created semver tag"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.semver.outputs.created_tag }}
+      - name: Create release and artifacts
+        id: release
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+  end:
+    name: 'End of workflow'
+    runs-on: 'ubuntu-latest'
+    needs: [tag_and_release]
+    steps:
+      - id: end
+        name: End
+        run: |
+          echo "End"

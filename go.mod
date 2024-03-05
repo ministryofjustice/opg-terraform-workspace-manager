@@ -1,8 +1,7 @@
 module terraform-workspace-cleanup
 
-go 1.14
+go 1.21
 
-require (
-	github.com/aws/aws-sdk-go v1.32.5
-	github.com/stretchr/testify v1.5.1
-)
+require github.com/aws/aws-sdk-go v1.50.31
+
+require github.com/jmespath/go-jmespath v0.4.0 // indirect

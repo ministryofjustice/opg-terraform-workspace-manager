@@ -1,5 +1,6 @@
 # terraform-workspace-cleanup
 
+Forked from [this code base](https://github.com/TomTucka/terraform-workspace-manager).
 
 ## Use Case
 
@@ -17,7 +18,7 @@ To use our module you can use the following snippet:
 
 ```
 module "workspace-cleanup" {
-  source  = "git@github.com:TomTucka/terraform-workspace-cleanup/terraform/workspace_cleanup"
+  source  = "git@github.com:ministryofjustice/opg-terraform-workspace-manager/terraform/workspace_cleanup"
   enabled = true
 }
 ```

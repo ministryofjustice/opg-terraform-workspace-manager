@@ -1,12 +1,13 @@
-project_name: terraform-workspace-manager
+project_name: opg-terraform-workspace-manager
 
 env_files:
-  github_token: ${{ secrets.access_token }}
+  github_token: ${{ secrets.GITHUB_TOKEN }}
 
 release:
+  prerelease: auto
   github:
-    owner: TomTucka
-    name: terraform-workspace-manager
+    owner: ministryofjustice
+    name: opg-terraform-workspace-manager
 
 builds:
   - binary: terraform-workspace-manager
@@ -25,9 +26,4 @@ builds:
       - arm
       - arm64
 archives:
-  -
-    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
-    replacements:
-      darwin: Darwin
-      linux: Linux
-      amd64: x86_64
+  - name_template: '{{- .ProjectName }}_{{- title .Os }}_{{- if eq .Arch "amd64" }}x86_64{{- else if eq .Arch "386" }}i386{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end -}}'
