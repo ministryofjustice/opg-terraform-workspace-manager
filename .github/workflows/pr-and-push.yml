@@ -17,12 +17,26 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: "Generate semver tag and release"
         uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@v3.0.2
         with:
           prerelease: ${{ env.prerelease }}
           releases_enabled: false
           with_v: true
+      - name: test release
+        id: rel
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: outputs
+        run: |
+          echo "${{ steps.rel.outputs.artifacts }}" >> $GITHUB_STEP_SUMMARY
 
   end:
     name: 'End of workflow'
