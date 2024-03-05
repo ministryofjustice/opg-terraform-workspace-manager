@@ -26,23 +26,6 @@ jobs:
           prerelease: ${{ env.prerelease }}
           releases_enabled: false
           with_v: true
-      - name: "Checkout"
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ steps.semver.outputs.created_tag }}
-      - name: test release
-        id: rel
-        uses: goreleaser/goreleaser-action@v5
-        with:
-          distribution: goreleaser
-          version: latest
-          args: release --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: outputs
-        run: |
-          echo "${{ steps.rel.outputs.artifacts }}" >> $GITHUB_STEP_SUMMARY
 
   end:
     name: 'End of workflow'
