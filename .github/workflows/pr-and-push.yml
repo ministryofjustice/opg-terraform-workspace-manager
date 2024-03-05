@@ -20,13 +20,17 @@ jobs:
         with:
           fetch-depth: 0
       - name: "Generate semver tag and release"
+        id: semver
         uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@v3.0.2
         with:
           prerelease: ${{ env.prerelease }}
           releases_enabled: false
           with_v: true
-      - run: |
-          git status
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.semver.outputs.created_tag }}
       - name: test release
         id: rel
         uses: goreleaser/goreleaser-action@v5
