@@ -18,18 +18,20 @@ type Session struct {
 	AwsSession *session.Session
 }
 
-func RegisterWorkspace(workspace *string, accountId *string, iamRoleName *string, timeToProtect *int64) {
+func RegisterWorkspace(workspace *string, accountId *string, iamRoleName *string, timeToProtect *int64, assumeRole *bool) {
 
 	sess, err := session.NewSession()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	RoleArn := "arn:aws:iam::" + *accountId + ":role/" + *iamRoleName
+	awsConfig := aws.Config{Region: aws.String("eu-west-1")}
 
-	creds := stscreds.NewCredentials(sess, RoleArn)
-	awsConfig := aws.Config{Credentials: creds, Region: aws.String("eu-west-1")}
-
+	if *assumeRole {
+		RoleArn := "arn:aws:iam::" + *accountId + ":role/" + *iamRoleName
+		creds := stscreds.NewCredentials(sess, RoleArn)
+		awsConfig.Credentials = creds
+	}
 	svc := dynamodb.New(sess, &awsConfig)
 
 	type Workspace struct {

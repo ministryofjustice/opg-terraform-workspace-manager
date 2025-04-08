@@ -15,17 +15,20 @@ type Item struct {
 	WorkspaceName string
 }
 
-func RetrieveProtectedWorkspaces(accountId *string, iamRoleName *string) {
+func RetrieveProtectedWorkspaces(accountId *string, iamRoleName *string, assumeRole *bool) {
 
 	sess, err := session.NewSession()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	RoleArn := "arn:aws:iam::" + *accountId + ":role/" + *iamRoleName
+	awsConfig := aws.Config{Region: aws.String("eu-west-1")}
 
-	creds := stscreds.NewCredentials(sess, RoleArn)
-	awsConfig := aws.Config{Credentials: creds, Region: aws.String("eu-west-1")}
+	if *assumeRole {
+		RoleArn := "arn:aws:iam::" + *accountId + ":role/" + *iamRoleName
+		creds := stscreds.NewCredentials(sess, RoleArn)
+		awsConfig.Credentials = creds
+	}
 
 	svc := dynamodb.New(sess, &awsConfig)
 
