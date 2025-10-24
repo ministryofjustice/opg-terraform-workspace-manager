@@ -16,18 +16,18 @@ jobs:
       prerelease: ${{ github.ref != 'refs/heads/main' }}
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
         with:
           fetch-depth: 0
       - name: "Generate semver tag"
         id: semver
-        uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@v3.0.2
+        uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@ea1e81f43e7593acd74cc114085930f5f54914a2 # v3.1.7
         with:
           prerelease: ${{ env.prerelease }}
           releases_enabled: false
           with_v: true
       - name: "Checkout to created semver tag"
-        uses: actions/checkout@v4
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
         with:
           fetch-depth: 0
           ref: ${{ steps.semver.outputs.created_tag }}
