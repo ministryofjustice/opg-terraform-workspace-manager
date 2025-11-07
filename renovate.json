@@ -35,8 +35,9 @@
       "schedule": ["after 6am and before 9am on Monday"],
       "stabilityDays": 3,
       "prCreation": "immediate",
-      "matchLanguages": ["golang"]
-    },
+      "matchLanguages": ["golang"],
+      "postUpdateOptions": ["gomodTidy"]
+    }
   ],
   "major": {
     "labels": ["Dependencies", "Renovate", "Major"],
