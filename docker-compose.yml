@@ -1,0 +1,4 @@
+services:
+  goreleaser:
+    build:
+      context: ./docker/goreleaser
