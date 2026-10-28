@@ -6,6 +6,9 @@ on:
   push:
     branches: ['main']
 
+permissions:
+  contents: write
+
 jobs:
   tag_and_release:
     name: "Tag and release"
@@ -32,13 +35,17 @@ jobs:
           ref: ${{ steps.semver.outputs.tag }}
       - name: Create release and artifacts
         id: release
-        uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
-        with:
-          distribution: goreleaser
-          version: '~> v2'
-          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker compose run \
+            --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v $PWD:/go/src/github.com/ministryofjustice/opg-terraform-workspace-manager \
+            -w /go/src/github.com/ministryofjustice/opg-terraform-workspace-manager \
+            -e GITHUB_TOKEN \
+            goreleaser \
+              release --clean
 
   end:
     name: 'End of workflow'

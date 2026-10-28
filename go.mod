@@ -1,6 +1,6 @@
 module terraform-workspace-cleanup
 
-go 1.21
+go 1.27.3
 
 require github.com/aws/aws-sdk-go v1.55.8
 
