@@ -23,7 +23,7 @@ jobs:
           fetch-tags: true
       - name: "Generate semver tag"
         id: semver
-        uses: ministryofjustice/opg-github-actions/actions/semver@4f345be3f706950d1fdc05bc86383967a149bd99 # v4.3.4
+        uses: ministryofjustice/opg-github-actions/actions/semver@ae37b9b322286123971417e82b665e56e9d6aa3f # v4.10.3
         with:
           prerelease: ${{ env.prerelease }}
           create_release: "false"
